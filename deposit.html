@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Deposit - Binany Agent Kenya</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, green, blue, cyan);
+      color: white;
+      padding: 20px;
+    }
+    form {
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: auto;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+    }
+    button {
+      background-color: #00a86b;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .back-btn {
+      background: #444;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Deposit Funds</h1>
+
+  <form name="depositForm" method="POST" data-netlify="true">
+    <input type="text" name="fullName" placeholder="Your Full Name" required />
+    <input type="text" name="binaryId" placeholder="Binany Account ID or Email" required />
+    <input type="number" name="amount" placeholder="Amount to Deposit (Ksh)" required />
+    <textarea name="phone" placeholder="M-Pesa Phone Number" required></textarea>
+    <button type="submit">Submit Deposit</button>
+    <button type="button" class="back-btn" onclick="window.location.href='index.html'">Back</button>
+  </form>
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Withdraw - Binany Agent Kenya</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, red, orange, yellow, green, blue, indigo, violet);
+      color: white;
+      padding: 20px;
+    }
+    form {
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: auto;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+    }
+    button {
+      background-color: #004aad;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .back-btn {
+      background: #444;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Withdraw Funds</h1>
+
+  <form id="withdrawForm">
+    <input type="text" id="fullName" placeholder="Your Full Name" required />
+    <input type="email" id="email" placeholder="Binany Account Email or ID" required />
+    <input type="number" id="amount" placeholder="Amount to Withdraw (Ksh)" min="605" required />
+    <textarea id="phone" placeholder="M-Pesa Phone Number" required></textarea>
+    <button type="submit">Submit Withdrawal</button>
+    <button type="button" class="back-btn" onclick="window.location.href='index.html'">Back</button>
+  </form>
+
+  <script>
+    document.getElementById('withdrawForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const phone = document.getElementById('phone').value.trim();
+      const amount = parseInt(document.getElementById('amount').value);
+
+      if (amount < 605) {
+        alert("Minimum withdrawal is 605 Ksh due to transaction fee.");
+        return;
+      }
+
+      fetch("https://script.google.com/macros/s/AKfycbxIMp0Xan0rmReHVOvreBQi_JFaXH25P5ecBdI_AOhZJdT1dRlkRnb6evgHnw_rpV6S4g/exec?phone=" + encodeURIComponent(phone))
+        .then(res => res.json())
+        .then(data => {
+          if (data.found) {
+            alert("✅ Withdrawal request accepted. We'll process it shortly.");
+          } else {
+            alert("❌ Withdrawal denied. This number did not deposit with us.");
+          }
+        })
+        .catch(() => {
+          alert("⚠️ Something went wrong. Please try again.");
+        });
+    });
+  </script>
+
+</body>
+</html>
