@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -36,6 +36,13 @@
       background: #444;
       margin-top: 10px;
     }
+    .fee-box {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -43,31 +50,88 @@
   <h1>Withdraw Funds</h1>
 
   <form id="withdrawForm">
-    <input type="text" id="fullName" placeholder="Your Full Name" required />
-    <input type="email" id="email" placeholder="Binany Account Email or ID" required />
-    <input type="number" id="amount" placeholder="Amount to Withdraw (Ksh)" min="605" required />
-    <textarea id="phone" placeholder="M-Pesa Phone Number" required></textarea>
+    <input type="text" id="fullName" name="fullName" placeholder="Your Full Name" required />
+    <input type="email" id="email" name="email" placeholder="Binany Account Email or ID" required />
+    <input type="number" id="amount" name="amount" placeholder="Amount to Withdraw (Ksh)" min="605" max="20000" required />
+    <div class="fee-box" id="feeInfo">Transaction Fee: -</div>
+    <textarea id="phone" name="phone" placeholder="M-Pesa Phone Number" required></textarea>
     <button type="submit">Submit Withdrawal</button>
     <button type="button" class="back-btn" onclick="window.location.href='index.html'">Back</button>
   </form>
 
   <script>
-    document.getElementById('withdrawForm').addEventListener('submit', function(e) {
-      e.preventDefault();
+    const amountInput = document.getElementById('amount');
+    const feeInfo = document.getElementById('feeInfo');
 
-      const phone = document.getElementById('phone').value.trim();
-      const amount = parseInt(document.getElementById('amount').value);
+    function getWithdrawalFee(amount) {
+      if (amount < 605) return null;
+      if (amount <= 3000) return 0;
+      return 50;
+    }
 
-      if (amount < 605) {
-        alert("Minimum withdrawal is 605 Ksh due to transaction fee.");
+    amountInput.addEventListener('input', () => {
+      const amount = parseInt(amountInput.value);
+      const fee = getWithdrawalFee(amount);
+
+      if (isNaN(amount)) {
+        feeInfo.textContent = "Transaction Fee: -";
         return;
       }
 
+      if (amount < 605) {
+        feeInfo.textContent = "Minimum withdrawal is Ksh 605.";
+      } else if (amount > 20000) {
+        feeInfo.textContent = "Maximum withdrawal is Ksh 20,000.";
+      } else {
+        feeInfo.textContent = `Transaction Fee: Ksh ${fee}`;
+      }
+    });
+
+    document.getElementById('withdrawForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const fullName = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const amount = parseInt(amountInput.value);
+      const phone = document.getElementById('phone').value.trim();
+      const fee = getWithdrawalFee(amount);
+
+      if (amount < 605) {
+        alert("❌ Minimum withdrawal is Ksh 605.");
+        return;
+      }
+
+      if (amount > 20000) {
+        alert("❌ Maximum withdrawal allowed is Ksh 20,000.");
+        return;
+      }
+
+      // Check if phone has previously deposited
       fetch("https://script.google.com/macros/s/AKfycbxIMp0Xan0rmReHVOvreBQi_JFaXH25P5ecBdI_AOhZJdT1dRlkRnb6evgHnw_rpV6S4g/exec?phone=" + encodeURIComponent(phone))
         .then(res => res.json())
         .then(data => {
           if (data.found) {
-            alert("✅ Withdrawal request accepted. We'll process it shortly.");
+            // Submit withdrawal info to Apps Script for email + record
+            const formData = new FormData();
+            formData.append("fullName", fullName);
+            formData.append("email", email);
+            formData.append("amount", amount);
+            formData.append("phone", phone);
+            formData.append("fee", fee);
+
+            fetch("YOUR_WITHDRAWAL_SCRIPT_URL_HERE", {
+              method: "POST",
+              body: formData
+            })
+            .then(() => {
+              alert("✅ Withdrawal request accepted. We'll process it shortly.");
+              document.getElementById('withdrawForm').reset();
+              feeInfo.textContent = "Transaction Fee: -";
+            })
+            .catch(() => {
+              alert("⚠️ Error submitting the withdrawal form.");
+            });
+
           } else {
             alert("❌ Withdrawal denied. This number did not deposit with us.");
           }
