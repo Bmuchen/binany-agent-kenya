@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); /* deep navy to teal */
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
       color: white;
       padding: 20px;
       margin: 0;
@@ -58,7 +58,7 @@
     }
 
     button {
-      background-color: #28a745; /* green */
+      background-color: #28a745;
       color: white;
       font-weight: bold;
       cursor: pointer;
@@ -95,20 +95,20 @@
   </div>
 
   <form id="depositForm">
-    <input type="text" name="fullName" placeholder="Your Full Name" required />
-    <input type="text" name="binaryId" placeholder="Binany Account ID or Email" required />
+    <input type="text" name="fullName" id="fullName" placeholder="Your Full Name" required />
+    <input type="text" name="binanyId" id="binanyId" placeholder="Binany Account ID or Email" required />
     
     <input type="number" name="amount" id="amount" placeholder="Amount to Deposit (Ksh)" required />
     <div class="fee-box" id="feeInfo">Transaction Fee: Ksh 0 | Total: Ksh 0</div>
     
-    <textarea name="phone" placeholder="Your M-Pesa Phone Number" required></textarea>
+    <textarea name="phone" id="phone" placeholder="Your M-Pesa Phone Number" required></textarea>
     
     <button type="submit">Submit Deposit</button>
     <button type="button" class="back-btn" onclick="window.location.href='index.html'">Back</button>
   </form>
 
   <script>
-    const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_URL'; // Replace with your actual URL
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbw4rC0l0_sB4zqX9z77ApJrTYZS7YcxPXyn7c3jPTTdeJFlm8FZRFkrgvx8DJyIGhCPtw/exec'; // 🔁 Replace this with your actual script URL
     const form = document.getElementById('depositForm');
     const amountInput = document.getElementById('amount');
     const feeInfo = document.getElementById('feeInfo');
