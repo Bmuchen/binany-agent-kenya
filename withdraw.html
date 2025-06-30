@@ -18,6 +18,7 @@
       border-radius: 10px;
       max-width: 500px;
       margin: auto;
+      transition: opacity 0.3s ease;
     }
     input, textarea, button {
       width: 100%;
@@ -32,6 +33,27 @@
       color: white;
       font-weight: bold;
       cursor: pointer;
+      position: relative;
+    }
+    button.loading {
+      background-color: #222;
+      pointer-events: none;
+    }
+    button.loading::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      width: 16px;
+      height: 16px;
+      border: 3px solid #fff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      transform: translateY(-50%);
+    }
+    @keyframes spin {
+      to { transform: translateY(-50%) rotate(360deg); }
     }
     .back-btn {
       background: #444;
@@ -43,6 +65,16 @@
       border-radius: 5px;
       text-align: center;
       font-weight: bold;
+    }
+    .message-box {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+      font-weight: bold;
+      color: red;
+      margin-top: 15px;
+      font-size: 20px;
     }
   </style>
 </head>
@@ -56,13 +88,17 @@
     <input type="number" id="amount" name="amount" placeholder="Amount to Withdraw (Ksh)" min="605" max="20000" required />
     <div class="fee-box" id="feeInfo">Transaction Fee: -</div>
     <textarea id="phone" name="phone" placeholder="M-Pesa Phone Number" required></textarea>
-    <button type="submit">Submit Withdrawal</button>
+    <button type="submit" id="submitBtn">Submit Withdrawal</button>
     <button type="button" class="back-btn" onclick="window.location.href='index.html'">Back</button>
+    <div id="messageBox" class="message-box"></div>
   </form>
 
   <script>
     const amountInput = document.getElementById('amount');
     const feeInfo = document.getElementById('feeInfo');
+    const messageBox = document.getElementById('messageBox');
+    const form = document.getElementById('withdrawForm');
+    const submitBtn = document.getElementById('submitBtn');
 
     function getWithdrawalFee(amount) {
       if (amount < 605) return null;
@@ -73,13 +109,9 @@
     amountInput.addEventListener('input', () => {
       const amount = parseInt(amountInput.value);
       const fee = getWithdrawalFee(amount);
-
       if (isNaN(amount)) {
         feeInfo.textContent = "Transaction Fee: -";
-        return;
-      }
-
-      if (amount < 605) {
+      } else if (amount < 605) {
         feeInfo.textContent = "Minimum withdrawal is Ksh 605.";
       } else if (amount > 20000) {
         feeInfo.textContent = "Maximum withdrawal is Ksh 20,000.";
@@ -88,60 +120,79 @@
       }
     });
 
-    document.getElementById('withdrawForm').addEventListener('submit', function(e) {
+    form.addEventListener('submit', function(e) {
       e.preventDefault();
+      messageBox.textContent = "";
+      form.style.opacity = 0.5;
+      submitBtn.classList.add('loading');
 
-      const fullName = document.getElementById('fullName').value.trim();
-      const email = document.getElementById('email').value.trim();
       const amount = parseInt(amountInput.value);
-      const phone = document.getElementById('phone').value.trim();
-      const fee = getWithdrawalFee(amount);
-
-      if (amount < 605) {
-        alert("❌ Minimum withdrawal is Ksh 605.");
+      if (amount < 605 || amount > 20000) {
+        showMessage("❌ Withdrawal must be between Ksh 605 and 20,000.");
+        resetFormVisuals();
         return;
       }
 
-      if (amount > 20000) {
-        alert("❌ Maximum withdrawal allowed is Ksh 20,000.");
-        return;
-      }
+      showMessage("❌ Withdrawal denied. This number did not deposit with us.");
+      resetFormVisuals();
 
-      // Check if phone has previously deposited
-      fetch("https://script.google.com/macros/s/AKfycbxIMp0Xan0rmReHVOvreBQi_JFaXH25P5ecBdI_AOhZJdT1dRlkRnb6evgHnw_rpV6S4g/exec?phone=" + encodeURIComponent(phone))
-        .then(res => res.json())
-        .then(data => {
-          if (data.found) {
-            // Submit withdrawal info to Apps Script for email + record
-            const formData = new FormData();
-            formData.append("fullName", fullName);
-            formData.append("email", email);
-            formData.append("amount", amount);
-            formData.append("phone", phone);
-            formData.append("fee", fee);
-
-            fetch("YOUR_WITHDRAWAL_SCRIPT_URL_HERE", {
-              method: "POST",
-              body: formData
-            })
-            .then(() => {
-              alert("✅ Withdrawal request accepted. We'll process it shortly.");
-              document.getElementById('withdrawForm').reset();
-              feeInfo.textContent = "Transaction Fee: -";
-            })
-            .catch(() => {
-              alert("⚠️ Error submitting the withdrawal form.");
-            });
-
-          } else {
-            alert("❌ Withdrawal denied. This number did not deposit with us.");
-          }
-        })
-        .catch(() => {
-          alert("⚠️ Something went wrong. Please try again.");
-        });
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 7000);
     });
+
+    function showMessage(text) {
+      messageBox.textContent = text;
+      messageBox.style.display = 'block';
+
+      setTimeout(() => {
+        messageBox.textContent = '';
+      }, 5000);
+    }
+
+    function resetFormVisuals() {
+      form.style.opacity = 1;
+      submitBtn.classList.remove('loading');
+    }
   </script>
 
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
 </body>
 </html>

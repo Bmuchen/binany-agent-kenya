@@ -1,8 +1,6 @@
- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Deposit - Binany Agent Kenya</title>
   <style>
     body {
@@ -95,13 +93,13 @@
   </div>
 
   <form id="depositForm">
-    <input type="text" name="fullName" id="fullName" placeholder="Your Full Name" required />
-    <input type="text" name="binanyId" id="binanyId" placeholder="Binany Account ID or Email" required />
+    <input type="text" name="fullName" id="fullName" placeholder="Your Full Name" required="">
+    <input type="text" name="binanyId" id="binanyId" placeholder="Binany Account ID or Email" required="">
     
-    <input type="number" name="amount" id="amount" placeholder="Amount to Deposit (Ksh)" required />
+    <input type="number" name="amount" id="amount" placeholder="Amount to Deposit (Ksh)" required="">
     <div class="fee-box" id="feeInfo">Transaction Fee: Ksh 0 | Total: Ksh 0</div>
     
-    <textarea name="phone" id="phone" placeholder="Your M-Pesa Phone Number" required></textarea>
+    <textarea name="phone" id="phone" placeholder="Your M-Pesa Phone Number" required=""></textarea>
     
     <button type="submit">Submit Deposit</button>
     <button type="button" class="back-btn" onclick="window.location.href='index.html'">Back</button>
@@ -164,5 +162,44 @@
     });
   </script>
 
-</body>
-</html>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+
+
+</body></html>
